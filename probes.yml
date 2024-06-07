@@ -1,0 +1,7 @@
+readinessProbe:
+  exec:
+    command:
+    - curl
+    - http://backend:5000/up
+  initialDelaySeconds: 15
+  periodSeconds: 10

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-ffox
+spec:
+  selector:
+    matchLabels:
+      run: my-ffox
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: my-ffox
+    spec:
+      containers:
+      - name: my-ffox
+        image: jlesage/firefox
+        ports:
+        - containerPort: 80

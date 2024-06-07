@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: jacekczyz/backend_image:latest
+        env:
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: password
+        - name: DATABASE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: username
+        - name: MONGODB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: myconfig
+              key: MONGODB_HOST
+        ports:
+        - containerPort: 5000
+        startupProbe:
+          httpGet:
+            path: /ready
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - curl
+            - http://backend:5000/up
+          initialDelaySeconds: 10
+          periodSeconds: 10
